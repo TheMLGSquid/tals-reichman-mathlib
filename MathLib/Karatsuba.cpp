@@ -4,8 +4,6 @@
 #include <random>
 
 int main() {
-	std::cout << BigNumber(166u) / BigNumber(5u) << std::endl;
-	return 0;
 	BigNumberBuffer a(12), b(12); // 4096 bit numbers
 
 	std::random_device rd;  // a seed source for the random number engine
