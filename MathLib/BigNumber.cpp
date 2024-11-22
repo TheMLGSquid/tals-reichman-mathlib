@@ -65,6 +65,15 @@ BigNumber BigNumber::with_extended_buffer(uint8_t exponent) const {
 }
 
 int BigNumber::compare_absolute_value(const BigNumber& other) const {
+	if (other.buffer_view_.exponent() < buffer_view_.exponent()) {
+		return compare_absolute_value(
+			other.with_extended_buffer(buffer_view_.exponent()));
+	}
+	if (other.buffer_view_.exponent() > buffer_view_.exponent()) {
+		return with_extended_buffer(other.buffer_view_.exponent())
+			.compare_absolute_value(other);
+	}
+
 	return memcmp_reverse(buffer_view_.data().data(), other.buffer_view_.data().data(),
 		buffer_view_.len());
 }
@@ -186,12 +195,13 @@ BigNumber BigNumber::low() const {
 
 void BigNumber::print(std::ostream& stream) const {
 	if (sign_) {
-		stream << "Negative ";
+		stream << "-";
 	}
+	stream << "0x";
 	std::span<const uint8_t> data = buffer_view_.data();
 	for (long long i = data.size() - 1; i >= 0; i--) {
 		stream << std::hex << std::setw(2) << std::setfill('0')
-			<< (int)data[i] << " ";
+			<< (int)data[i] << "";
 	}
 }
 
@@ -232,12 +242,12 @@ bool BigNumber::operator== (const BigNumber& rhs) const {
 	return !compare_absolute_value(rhs) && sign_ == rhs.sign_;
 }
 bool BigNumber::operator < (const BigNumber& rhs) const {
-	if (!sign_ && rhs.sign_) {
-		return !is_zero() && !rhs.is_zero();
-	}
-
 	if (sign_ && rhs.sign_) {
 		return !(rhs.negated() < this->negated());
+	}
+
+	if (sign_) {
+		return !is_zero() && !rhs.is_zero();
 	}
 
 	return compare_absolute_value(rhs) == -1;
@@ -253,11 +263,19 @@ BigNumber BigNumber::div(const BigNumber& other, BigNumber* remainder) const {
 		return BigNumber(0u);
 	}
 
+	if (sign_ && other.sign_) {
+		return negated().div(other.negated(), remainder);
+	}
+	
+	if (sign_ || other.sign_) {
+		return div_different_signs(other, remainder);
+	}
+
 	BigNumber q, r;
 
 	// Divide by 256 and divide the result by other
 	q = (this->shift_right(8)).div(other, &r);
-
+	
 	q = q << 8;
 	r = r << 8;
 
@@ -272,4 +290,11 @@ BigNumber BigNumber::div(const BigNumber& other, BigNumber* remainder) const {
 
 	if (remainder) *remainder = r;
 	return q;
+}
+
+BigNumber BigNumber::div_different_signs(const BigNumber& other, BigNumber* remainder) const
+{
+	BigNumber negated_quotient = negated().div(other, remainder).negated();
+	*remainder = other - *remainder;
+	return negated_quotient;
 }

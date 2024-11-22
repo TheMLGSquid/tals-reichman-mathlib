@@ -75,7 +75,9 @@ BigNumberBufferView BigNumberBufferView::shift_left(size_t count) const {
 
 BigNumberBufferView BigNumberBufferView::shift_right(size_t count) const {
 	size_t new_length = len() - count / 8;
-	BigNumberBuffer buffer(ilog2(upper_power_of_two(new_length)));
+	BigNumberBuffer buffer(new_length != 0
+			? ilog2(upper_power_of_two(new_length))
+			: 0);
 	
 	uint8_t offset_within_byte = count & 0b111;
 

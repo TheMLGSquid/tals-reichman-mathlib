@@ -3,11 +3,12 @@
 #include <stdint.h>
 #include <vector>
 #include <span>
+#include <variant>
 
-
-class BigNumberBuffer {
+class BigNumberBuffer final {
 public:
 	explicit BigNumberBuffer(uint8_t len_exponent);
+	~BigNumberBuffer();
 
 	static BigNumberBuffer from_number(uint32_t num);
 	static BigNumberBuffer from_number(uint8_t num);
@@ -23,10 +24,11 @@ public:
 	BigNumberBuffer extended(uint8_t new_len_exponent) const;
 
 	void extend(uint8_t new_len_exponent);
+	void extend_from_inline_to_buf(uint8_t new_len_exponent);
 	void extend();
 	static size_t len_from_exponent(uint8_t exponent);
 private:
 	uint8_t len_exponent_; // 8 bits will suffice
-	std::vector<uint8_t> data_;
+	std::variant<std::vector<uint8_t>, long long> data_;
 };
 

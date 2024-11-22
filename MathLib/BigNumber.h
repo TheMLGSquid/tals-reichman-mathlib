@@ -35,6 +35,8 @@ public:
 	BigNumber mult(const BigNumber& other) const;
 	BigNumber div(const BigNumber& other, BigNumber *remainder) const;
 
+	BigNumber div_different_signs(const BigNumber& other, BigNumber* remainder) const;
+
 	BigNumber& operator = (const BigNumber& other);
 	BigNumber operator + (const BigNumber& other) const;
 	BigNumber operator - (const BigNumber& other) const;
