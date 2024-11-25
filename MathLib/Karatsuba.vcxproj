@@ -134,9 +134,11 @@
     <ClCompile Include="BigNumberBuffer.cpp" />
     <ClCompile Include="BigNumberBufferView.cpp" />
     <ClCompile Include="BigNumberBufferView.h" />
+    <ClCompile Include="extended_euclid.cpp" />
     <ClCompile Include="Karatsuba.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="extended_euclid.h" />
     <ClInclude Include="BigNumberBuffer.h" />
     <ClInclude Include="iter_utils.h" />
     <ClInclude Include="number_utils.h" />

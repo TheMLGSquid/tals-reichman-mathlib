@@ -9,6 +9,9 @@
 
 class BigNumber {
 public:
+	const static BigNumber ONE;
+	const static BigNumber ZERO;
+
 	BigNumber();
 
 	BigNumber(uint32_t number);
@@ -17,6 +20,8 @@ public:
 
 	static const BigNumber power_of_two(size_t exponent);
 
+	bool sign() const { return sign_; }
+	bool non_negative() const { return !sign_ || is_zero(); }
 	bool is_zero() const;
 	BigNumber negated() const;
 	void negate();
@@ -33,6 +38,7 @@ public:
 	BigNumber shift_right(size_t count) const;
 
 	BigNumber mult(const BigNumber& other) const;
+	BigNumber mod(const BigNumber& other) const;
 	BigNumber div(const BigNumber& other, BigNumber *remainder) const;
 
 	BigNumber div_different_signs(const BigNumber& other, BigNumber* remainder) const;

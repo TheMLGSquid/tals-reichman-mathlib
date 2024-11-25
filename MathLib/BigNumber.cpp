@@ -1,6 +1,9 @@
 #include "BigNumber.h"
 #include "number_utils.h"
 
+const BigNumber BigNumber::ONE = 1u;
+const BigNumber BigNumber::ZERO = 0u;
+
 inline static uint8_t op_with_overflow(bool addition, uint8_t a, uint8_t b, uint8_t c, bool* overflow) {
 	int16_t result;
 
@@ -139,6 +142,13 @@ BigNumber BigNumber::shift_left(size_t count) const {
 }
 BigNumber BigNumber::shift_right(size_t count) const {
 	return BigNumber(buffer_view_.shift_right(count), sign_);
+}
+
+BigNumber BigNumber::mod(const BigNumber& other) const {
+	BigNumber modulus;
+	(void)div(other, &modulus);
+
+	return modulus;
 }
 
 BigNumber BigNumber::mult(const BigNumber& rhs) const {
