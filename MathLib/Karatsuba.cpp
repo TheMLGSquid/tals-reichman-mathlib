@@ -25,7 +25,7 @@ void multiplication_demo() {
 	std::cout << x * y << std::endl;
 }
 void division_demo() {
-	BigNumberBuffer a(9), b(9); // 512 bit numbers
+	BigNumberBuffer a(9), b(9); // 2^9 = 512 bit numbers
 
 	std::random_device rd;  // a seed source for the random number engine
 	std::mt19937 gen(rd()); // mersenne_twister_engine seeded with rd()
@@ -38,7 +38,7 @@ void division_demo() {
 		b.data()[i] = dist(gen);
 	}
 
-	BigNumber x = BigNumber(BigNumberBufferView(std::move(a)), true),
+	BigNumber x = BigNumber(BigNumberBufferView(std::move(a))),
 		y = BigNumber(BigNumberBufferView(std::move(b)));
 
 
